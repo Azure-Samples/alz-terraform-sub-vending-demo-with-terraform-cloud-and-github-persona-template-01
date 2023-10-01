@@ -3,9 +3,10 @@ terraform {
 }
 
 provider "azurerm" {
-  features {}
+  features {
+    skip_provider_registration = true
+  }
 }
-
 
 data "azurerm_resource_group" "example" {
   name       = var.resource_group_name
