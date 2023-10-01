@@ -28,7 +28,7 @@ jobs:
       - name: Terraform Organization and Workspace
         id: workspace
         run: |
-          echo "TF_CLOUD_ORGANIZATIOM=${{ secrets.TF_CLOUD_ORGANIZATION }}" >> $GITHUB_ENV
+          echo "TF_CLOUD_ORGANIZATION=${{ secrets.TF_CLOUD_ORGANIZATION }}" >> $GITHUB_ENV
           echo "TF_WORKSPACE=${{ secrets.TF_WORKSPACE }}" >> $GITHUB_ENV
 
       - name: Terraform Format
@@ -77,7 +77,7 @@ jobs:
       - name: Terraform Workspace
         id: workspace
         run: |
-          echo "TF_CLOUD_ORGANIZATIOM=${{ vars.TF_CLOUD_ORGANIZATION }}" >> $GITHUB_ENV
+          echo "TF_CLOUD_ORGANIZATION=${{ vars.TF_CLOUD_ORGANIZATION }}" >> $GITHUB_ENV
           echo "TF_WORKSPACE=${{ vars.TF_WORKSPACE }}" >> $GITHUB_ENV
 
       - name: Terraform Init
