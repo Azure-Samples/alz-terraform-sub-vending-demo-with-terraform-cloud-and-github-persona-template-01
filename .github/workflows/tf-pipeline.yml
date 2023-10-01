@@ -77,14 +77,14 @@ jobs:
       - name: Terraform Workspace
         id: workspace
         run: |
-          echo "TF_CLOUD_ORGANIZATIOM=${{ secrets.TF_CLOUD_ORGANIZATION }}" >> $GITHUB_ENV
-          echo "TF_WORKSPACE=${{ secrets.TF_WORKSPACE }}" >> $GITHUB_ENV
+          echo "TF_CLOUD_ORGANIZATIOM=${{ vars.TF_CLOUD_ORGANIZATION }}" >> $GITHUB_ENV
+          echo "TF_WORKSPACE=${{ vars.TF_WORKSPACE }}" >> $GITHUB_ENV
 
       - name: Terraform Init
         id: init
         run: terraform init
           
       - name: Terraform Apply
-        run: terraform apply -auto-approve
+        run: terraform apply -auto-approve -var="resource_group_name=${{ vars.RESOURCE_GROUP_NAME }}"
       
   
