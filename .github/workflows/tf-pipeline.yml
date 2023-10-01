@@ -85,6 +85,6 @@ jobs:
         run: terraform init
           
       - name: Terraform Apply
-        run: terraform apply -auto-approve -var="resource_group_name=${{ vars.RESOURCE_GROUP_NAME }}"
+        run: terraform apply -auto-approve"
       
   
