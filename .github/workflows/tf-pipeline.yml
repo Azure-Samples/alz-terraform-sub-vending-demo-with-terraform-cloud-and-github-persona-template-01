@@ -1,0 +1,90 @@
+name: "Terraform Pipeline"
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+      
+  workflow_dispatch:
+  
+jobs:
+  pull-request-checks:
+    name: "Pull Request Checks"
+    runs-on: ubuntu-latest
+    if: github.ref != 'refs/heads/main'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+          
+      - name: Terraform Organization and Workspace
+        id: workspace
+        run: |
+          echo "TF_CLOUD_ORGANIZATIOM=${{ secrets.TF_CLOUD_ORGANIZATION }}" >> $GITHUB_ENV
+          echo "TF_WORKSPACE=${{ secrets.TF_WORKSPACE }}" >> $GITHUB_ENV
+
+      - name: Terraform Format
+        id: fmt
+        run: terraform fmt -check
+        
+      - name: Terraform Lint / Static Analysis
+        id: lint
+        run: echo "Run some analysis here"
+
+      - name: Terraform Init
+        id: init
+        run: terraform init
+        
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -out=plan.tfplan
+        
+      - name: Terraform Convert Plan to json
+        id: json
+        run: terraform show -json plan.tfplan > plan.json
+        
+      - name: Analyse / Test Plan
+        id: analyse
+        run: echo "Run some analysis here"
+        
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+        
+      - name: Run Functional Tests
+        run: echo "Run some tests against the infra here"
+    
+  deploy:
+    name: "Deploy"
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && contains(toJson(github.event.commits), 'Initial commit') == false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+          
+      - name: Terraform Workspace
+        id: workspace
+        run: |
+          echo "TF_CLOUD_ORGANIZATIOM=${{ secrets.TF_CLOUD_ORGANIZATION }}" >> $GITHUB_ENV
+          echo "TF_WORKSPACE=${{ secrets.TF_WORKSPACE }}" >> $GITHUB_ENV
+
+      - name: Terraform Init
+        id: init
+        run: terraform init
+          
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+      
+  
